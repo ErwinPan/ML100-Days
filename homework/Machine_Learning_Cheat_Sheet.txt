@@ -1,0 +1,450 @@
+
+* SVM
+支撐向量機(support vector machine, SVM)
+
+* CART: 
+
+* k-NN 分類器:  k-Nearest Neighbors 
+
+------
+
+# Day 36
+	* 評估指標 - 回歸
+		* MAE, Mean Absolute Error, 範圍: [-∞, ∞]
+		* MSE, Mean Square Error, 範圍: [-∞, ∞]
+		* R-square, 範圍: [0, 1]
+	* 評估指標 - 分類
+		* AUC, Area Under Curve, 範圍: [0, 1]
+			* The curve is : 接收者操作特徵曲線（receiver operating characteristic curve，或者叫ROC曲線）
+		* F1-Score
+			* F1-Score 則是 Precision, Recall 的調和平均數
+			* Precision: 模型判定瑕疵，樣本確實為瑕疵的比例例
+				* Precision = TP / (TP + FP)
+			* Recall: 模型判定的瑕疵，佔樣本所有瑕疵的比例例
+				* Recall = TP / (TP + FN)
+			* Definitions
+				* 真陽性 (TP, true positive)
+					* 正確的肯定。又稱：命中 (hit)
+				* 真陰性 (TN, true negative)
+					* 正確的否定。又稱：正確拒絕 (correct rejection)
+				* 偽陽性 (FP, false positive)
+					* 錯誤的肯定，又稱：假警報 (false alarm)，第一型錯誤
+				* 偽陰性 (FN, false negative)
+					* 錯誤的否定，又稱：未命中 (miss)，第二型錯誤
+	* 混淆矩陣 (Confusion Matrix) ?
+	* Q: 這麼多評估指標，該怎麼選擇?
+		* 回歸問題: 可以透過 R-square 很快了了解預測的準確程度；
+		* 分類問題: 若若為二分類 (binary classification)，通常使用 AUC 評估。
+			* 但如果有特別希望哪一類別不要分錯，則可使⽤用 F1-Score，觀察 Recall 值或是 Precision 值。
+		* 多分類問題: 則可使用 top-k accuracy，k 代表模型預測前 k 個類別有包含正確類別即為正確 (ImageNet 競賽通常都是比 Top-5 Accuracy)
+		
+		
+------
+
+# Day 37 Regression 模型
+
+	* 把 LogisticRegression 訓練出來的結果視覺化
+```
+	lr = LogisticRegression
+	lr.fit(X_train_std, y_train['target'].values)
+	
+	plot_decision_regions(X_train_std, y_train['target'], classifier=lr)
+	plt.xlabel('...')
+	plt.ylabel('...')
+	plt.show()
+```
+
+	* Logistic Regression優點：
+		* 資料不需要線性可分
+		* 可以獲得A類跟B類的機率
+		* 實務上Logistic Regression執行速度非常快
+		
+	* Logistic Regression缺點：
+		* 線的切法不夠漂亮，以人的觀察應該要大概要像是綠色的線才是一個比較好的分法（下一章的SVM將會解決這個問題）
+
+
+
+
+
+------
+
+# Day 41
+
+	* 吉尼係數 (gini-index) 或熵 (entropy)
+		* 0 => 1 
+			* 1 - (1/2)**2 = 1/2  
+			
+	* 混亂程度有兩種評估方式：
+		一、 Gini impurity ：各個類別的數據比例，兩兩相乘（不乘自身），總和越小越好；
+		二、 information gain ：各個類別的數據比例，求熵，總和越小越好。
+		
+	* Decision Tree
+		* 把區隔效果 (Information Gain) 最好的放在跟目錄
+		* 以公司要不要錄取來說, 考試是不是及格, 就是最大的因素 (以我個人來說). 如果考 0 分, 100% 不錄取
+		* 以要不要處理 email, 收件者有提到我的名字的, 就優先處理
+		
+	
+------
+
+# Day 42
+
+## 建立模型四步驟
+
+	* 在 Scikit-learn 中，建立一個機器學習的模型其實非常簡單，流程大略是以下四個步驟
+
+	* 讀進資料，並檢查資料的 shape (有多少 samples (rows), 多少 features (columns)，label 的型態是什麼？)
+		* 使用 pandas 讀取 .csv 檔：pd.read_csv
+		* 使用 numpy 讀取 .txt 檔：np.loadtxt
+		* 使用 Scikit-learn 內建的資料集：sklearn.datasets.load_xxx
+		* 檢查資料數量：data.shape (data should be np.array or dataframe)
+		
+	* 將資料切為訓練 (train) / 測試 (test)
+		* train_test_split(data)
+		
+	* 建立模型，將資料 fit 進模型開始訓練
+		* clf = DecisionTreeClassifier()
+		* clf.fit(x_train, y_train)
+		
+	* 將測試資料 (features) 放進訓練好的模型中，得到 prediction，與測試資料的 label (y_test) 做評估
+		* clf.predict(x_test)
+		* accuracy_score(y_test, y_pred)
+		* f1_score(y_test, y_pred)
+	
+	* print(iris.feature_names)
+	* print("Feature importance: ", clf.feature_importances_)
+	
+------
+
+# Day 43
+
+	* One of 整體學習（Ensemble learning）
+		* 可以將數個分類器的預測結果綜合考慮，藉此達到顯著提升分類效果
+
+	* Bootstrap Aggregating
+
+
+------
+
+# Day 44
+
+	------
+
+	 ## sklearn.ensemble.RandomForestClassifier
+	```
+	class sklearn.ensemble.RandomForestClassifier(n_estimators=’warn’, criterion=’gini’, max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=’auto’, max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, bootstrap=True, oob_score=False, n_jobs=None, random_state=None, verbose=0, warm_start=False, class_weight=None)[source]
+	```
+	A random forest classifier.
+
+	A random forest is a meta estimator that fits a number of decision tree classifiers on various sub-samples of the dataset and uses averaging to improve the predictive accuracy and control over-fitting. The sub-sample size is always the same as the original input sample size but the samples are drawn with replacement if bootstrap=True (default).
+
+	Read more in the User Guide.
+
+	### Parameters:	
+	#### n_estimators : integer, optional (default=10)
+	The number of trees in the forest.
+
+	Changed in version 0.20: The default value of n_estimators will change from 10 in version 0.20 to 100 in version 0.22.
+
+	#### criterion : string, optional (default=”gini”)
+	The function to measure the quality of a split. Supported criteria are “gini” for the Gini impurity and “entropy” for the information gain. Note: this parameter is tree-specific.
+
+	#### max_depth : integer or None, optional (default=None)
+	The maximum depth of the tree. If None, then nodes are expanded until all leaves are pure or until all leaves contain less than min_samples_split samples.
+
+	#### min_samples_split : int, float, optional (default=2)
+	The minimum number of samples required to split an internal node:
+
+	If int, then consider min_samples_split as the minimum number.
+	If float, then min_samples_split is a fraction and ceil(min_samples_split * n_samples) are the minimum number of samples for each split.
+	Changed in version 0.18: Added float values for fractions.
+
+	#### min_samples_leaf : int, float, optional (default=1)
+	The minimum number of samples required to be at a leaf node. A split point at any depth will only be considered if it leaves at least min_samples_leaf training samples in each of the left and right branches. This may have the effect of smoothing the model, especially in regression.
+
+	If int, then consider min_samples_leaf as the minimum number.
+	If float, then min_samples_leaf is a fraction and ceil(min_samples_leaf * n_samples) are the minimum number of samples for each node.
+	Changed in version 0.18: Added float values for fractions.
+
+	#### min_weight_fraction_leaf : float, optional (default=0.)
+	The minimum weighted fraction of the sum total of weights (of all the input samples) required to be at a leaf node. Samples have equal weight when sample_weight is not provided.
+
+	#### max_features : int, float, string or None, optional (default=”auto”)
+	The number of features to consider when looking for the best split:
+
+	If int, then consider max_features features at each split.
+	If float, then max_features is a fraction and int(max_features * n_features) features are considered at each split.
+	If “auto”, then max_features=sqrt(n_features).
+	If “sqrt”, then max_features=sqrt(n_features) (same as “auto”).
+	If “log2”, then max_features=log2(n_features).
+	If None, then max_features=n_features.
+	Note: the search for a split does not stop until at least one valid partition of the node samples is found, even if it requires to effectively inspect more than max_features features.
+
+	#### max_leaf_nodes : int or None, optional (default=None)
+	Grow trees with max_leaf_nodes in best-first fashion. Best nodes are defined as relative reduction in impurity. If None then unlimited number of leaf nodes.
+
+	#### min_impurity_decrease : float, optional (default=0.)
+	A node will be split if this split induces a decrease of the impurity greater than or equal to this value.
+
+	The weighted impurity decrease equation is the following:
+
+	N_t / N * (impurity - N_t_R / N_t * right_impurity
+						- N_t_L / N_t * left_impurity)
+	where N is the total number of samples, N_t is the number of samples at the current node, N_t_L is the number of samples in the left child, and N_t_R is the number of samples in the right child.
+
+	N, N_t, N_t_R and N_t_L all refer to the weighted sum, if sample_weight is passed.
+
+	New in version 0.19.
+
+	#### min_impurity_split : float, (default=1e-7)
+	Threshold for early stopping in tree growth. A node will split if its impurity is above the threshold, otherwise it is a leaf.
+
+	Deprecated since version 0.19: min_impurity_split has been deprecated in favor of min_impurity_decrease in 0.19. The default value of min_impurity_split will change from 1e-7 to 0 in 0.23 and it will be removed in 0.25. Use min_impurity_decrease instead.
+	#### bootstrap : boolean, optional (default=True)
+	Whether bootstrap samples are used when building trees. If False, the whole datset is used to build each tree.
+
+	#### oob_score : bool (default=False)
+	Whether to use out-of-bag samples to estimate the generalization accuracy.
+
+	#### n_jobs : int or None, optional (default=None)
+	The number of jobs to run in parallel for both fit and predict. None means 1 unless in a joblib.parallel_backend context. -1 means using all processors. See Glossary for more details.
+
+	#### random_state : int, RandomState instance or None, optional (default=None)
+	If int, random_state is the seed used by the random number generator; If RandomState instance, random_state is the random number generator; If None, the random number generator is the RandomState instance used by np.random.
+
+	#### verbose : int, optional (default=0)
+	Controls the verbosity when fitting and predicting.
+
+	#### warm_start : bool, optional (default=False)
+	When set to True, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest. See the Glossary.
+
+	#### class_weight : dict, list of dicts, “balanced”, “balanced_subsample” or None, optional (default=None)
+	Weights associated with classes in the form {class_label: weight}. If not given, all classes are supposed to have weight one. For multi-output problems, a list of dicts can be provided in the same order as the columns of y.
+
+	Note that for multioutput (including multilabel) weights should be defined for each class of every column in its own dict. For example, for four-class multilabel classification weights should be [{0: 1, 1: 1}, {0: 1, 1: 5}, {0: 1, 1: 1}, {0: 1, 1: 1}] instead of [{1:1}, {2:5}, {3:1}, {4:1}].
+
+	The “balanced” mode uses the values of y to automatically adjust weights inversely proportional to class frequencies in the input data as n_samples / (n_classes * np.bincount(y))
+
+	The “balanced_subsample” mode is the same as “balanced” except that weights are computed based on the bootstrap sample for every tree grown.
+
+	For multi-output, the weights of each column of y will be multiplied.
+
+	Note that these weights will be multiplied with sample_weight (passed through the fit method) if sample_weight is specified.
+
+	### Attributes:	
+	#### estimators_ : list of DecisionTreeClassifier
+	The collection of fitted sub-estimators.
+
+	#### classes_ : array of shape = [n_classes] or a list of such arrays
+	The classes labels (single output problem), or a list of arrays of class labels (multi-output problem).
+
+	#### n_classes_ : int or list
+	The number of classes (single output problem), or a list containing the number of classes for each output (multi-output problem).
+
+	#### n_features_ : int
+	The number of features when fit is performed.
+
+	#### n_outputs_ : int
+	The number of outputs when fit is performed.
+
+	#### feature_importances_ : array of shape = [n_features]
+	Return the feature importances (the higher, the more important the feature).
+
+	#### oob_score_ : float
+	Score of the training dataset obtained using an out-of-bag estimate.
+
+	#### oob_decision_function_ : array of shape = [n_samples, n_classes]
+	Decision function computed with out-of-bag estimate on the training set. If n_estimators is small it might be possible that a data point was never left out during the bootstrap. In this case, oob_decision_function_ might contain NaN.
+
+	------
+
+	=============
+
+
+	-------
+
+	## sklearn.ensemble.RandomForestRegressor
+	```
+	class sklearn.ensemble.RandomForestRegressor(n_estimators=’warn’, criterion=’mse’, max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=’auto’, max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, bootstrap=True, oob_score=False, n_jobs=None, random_state=None, verbose=0, warm_start=False)[source]
+	A random forest regressor.
+	```
+
+	A random forest is a meta estimator that fits a number of classifying decision trees on various sub-samples of the dataset and uses averaging to improve the predictive accuracy and control over-fitting. The sub-sample size is always the same as the original input sample size but the samples are drawn with replacement if bootstrap=True (default).
+
+	Read more in the User Guide.
+
+	### Parameters:	
+	#### n_estimators : integer, optional (default=10)
+	The number of trees in the forest.
+
+	Changed in version 0.20: The default value of n_estimators will change from 10 in version 0.20 to 100 in version 0.22.
+
+	#### criterion : string, optional (default=”mse”)
+	The function to measure the quality of a split. Supported criteria are “mse” for the mean squared error, which is equal to variance reduction as feature selection criterion, and “mae” for the mean absolute error.
+
+	New in version 0.18: Mean Absolute Error (MAE) criterion.
+
+	#### max_depth : integer or None, optional (default=None)
+	The maximum depth of the tree. If None, then nodes are expanded until all leaves are pure or until all leaves contain less than min_samples_split samples.
+
+	#### min_samples_split : int, float, optional (default=2)
+	The minimum number of samples required to split an internal node:
+
+	If int, then consider min_samples_split as the minimum number.
+	If float, then min_samples_split is a fraction and ceil(min_samples_split * n_samples) are the minimum number of samples for each split.
+	Changed in version 0.18: Added float values for fractions.
+
+	min_samples_leaf : int, float, optional (default=1)
+	The minimum number of samples required to be at a leaf node. A split point at any depth will only be considered if it leaves at least min_samples_leaf training samples in each of the left and right branches. This may have the effect of smoothing the model, especially in regression.
+
+	If int, then consider min_samples_leaf as the minimum number.
+	If float, then min_samples_leaf is a fraction and ceil(min_samples_leaf * n_samples) are the minimum number of samples for each node.
+	Changed in version 0.18: Added float values for fractions.
+
+	#### min_weight_fraction_leaf : float, optional (default=0.)
+	The minimum weighted fraction of the sum total of weights (of all the input samples) required to be at a leaf node. Samples have equal weight when sample_weight is not provided.
+
+	#### max_features : int, float, string or None, optional (default=”auto”)
+	The number of features to consider when looking for the best split:
+
+	If int, then consider max_features features at each split.
+	If float, then max_features is a fraction and int(max_features * n_features) features are considered at each split.
+	If “auto”, then max_features=n_features.
+	If “sqrt”, then max_features=sqrt(n_features).
+	If “log2”, then max_features=log2(n_features).
+	If None, then max_features=n_features.
+	Note: the search for a split does not stop until at least one valid partition of the node samples is found, even if it requires to effectively inspect more than max_features features.
+
+	#### max_leaf_nodes : int or None, optional (default=None)
+	Grow trees with max_leaf_nodes in best-first fashion. Best nodes are defined as relative reduction in impurity. If None then unlimited number of leaf nodes.
+
+	#### min_impurity_decrease : float, optional (default=0.)
+	A node will be split if this split induces a decrease of the impurity greater than or equal to this value.
+
+	The weighted impurity decrease equation is the following:
+
+	N_t / N * (impurity - N_t_R / N_t * right_impurity
+						- N_t_L / N_t * left_impurity)
+	where N is the total number of samples, N_t is the number of samples at the current node, N_t_L is the number of samples in the left child, and N_t_R is the number of samples in the right child.
+
+	N, N_t, N_t_R and N_t_L all refer to the weighted sum, if sample_weight is passed.
+
+	New in version 0.19.
+
+	#### min_impurity_split : float, (default=1e-7)
+	Threshold for early stopping in tree growth. A node will split if its impurity is above the threshold, otherwise it is a leaf.
+
+	Deprecated since version 0.19: min_impurity_split has been deprecated in favor of min_impurity_decrease in 0.19. The default value of min_impurity_split will change from 1e-7 to 0 in 0.23 and it will be removed in 0.25. Use min_impurity_decrease instead.
+	bootstrap : boolean, optional (default=True)
+	Whether bootstrap samples are used when building trees. If False, the whole datset is used to build each tree.
+
+	#### oob_score : bool, optional (default=False)
+	whether to use out-of-bag samples to estimate the R^2 on unseen data.
+
+	#### n_jobs : int or None, optional (default=None)
+	The number of jobs to run in parallel for both fit and predict. None` means 1 unless in a joblib.parallel_backend context. -1 means using all processors. See Glossary for more details.`
+
+	#### random_state : int, RandomState instance or None, optional (default=None)
+	If int, random_state is the seed used by the random number generator; If RandomState instance, random_state is the random number generator; If None, the random number generator is the RandomState instance used by np.random.
+
+	#### verbose : int, optional (default=0)
+	Controls the verbosity when fitting and predicting.
+
+	#### warm_start : bool, optional (default=False)
+	When set to True, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest. See the Glossary.
+
+	### Attributes:	
+	#### estimators_ : list of DecisionTreeRegressor
+	The collection of fitted sub-estimators.
+
+	#### feature_importances_ : array of shape = [n_features]
+	Return the feature importances (the higher, the more important the feature).
+
+	#### n_features_ : int
+	The number of features when fit is performed.
+
+	#### n_outputs_ : int
+	The number of outputs when fit is performed.
+
+	#### oob_score_ : float
+	Score of the training dataset obtained using an out-of-bag estimate.
+
+	#### oob_prediction_ : array of shape = [n_samples]
+	Prediction computed with out-of-bag estimate on the training set.
+
+	-------
+
+
+
+	from sklearn import datasets, metrics
+	from sklearn.ensemble import RandomForestClassifier
+	from sklearn.ensemble import RandomForestRegressor
+	from sklearn.model_selection import train_test_split
+	
+	class RandomForestClassifierEvaluator():
+		def __init__(self, n_estimators='warn', criterion='gini', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features='auto', max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None):
+			
+			# 建立模型
+			self.clf = RandomForestClassifier(n_estimators, criterion, max_depth, min_samples_split, min_samples_leaf, min_weight_fraction_leaf, max_features, max_leaf_nodes, min_impurity_decrease, min_impurity_split)
+		
+		def run(self, dataset):
+
+			# 切分訓練集/測試集
+			x_train, x_test, y_train, y_test = train_test_split(dataset.data, dataset.target, test_size=0.25, random_state=4)
+
+
+			# 訓練模型
+			self.clf.fit(x_train, y_train)
+
+			# 預測測試集
+			y_pred = self.clf.predict(x_test)
+
+			acc = metrics.accuracy_score(y_test, y_pred)
+
+			print("Acuuracy: ", acc)
+
+			print(dataset.feature_names)
+
+			print("Feature importance: ", self.clf.feature_importances_)
+			
+	# 讀取鳶尾花資料集
+	iris = datasets.load_iris()
+	evaluator = RandomForestClassifierEvaluator()
+	evaluator.run(iris)
+			
+	from sklearn.metrics import mean_squared_error
+	from sklearn.metrics import mean_absolute_error
+	
+	class RandomForestRegressorEvaluator():
+		def __init__(self, n_estimators='warn', criterion='mse', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features='auto', max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, bootstrap=True, oob_score=False, n_jobs=None, random_state=None, verbose=0, warm_start=False):
+
+			# 建立模型
+			self.clf = RandomForestRegressor(n_estimators, criterion, max_depth, min_samples_split, min_samples_leaf, min_weight_fraction_leaf, max_features, max_leaf_nodes, min_impurity_decrease, min_impurity_split, bootstrap, oob_score, n_jobs, random_state, verbose, warm_start)
+			self.criterion = criterion
+			
+		def run(self, dataset):
+			# 切分訓練集/測試集
+			
+			x_train, x_test, y_train, y_test = train_test_split(dataset.data, dataset.target, test_size=0.25, random_state=4)
+			# 訓練模型
+			self.clf.fit(x_train, y_train)
+
+			# 預測測試集
+			y_pred = self.clf.predict(x_test)
+
+			if self.criterion == 'mae':
+				# 預測值與實際值的差距，使用 MAE
+				print("\033[1;33m Mean absolute error: %.2f \033[0m" % mean_absolute_error(y_test, y_pred))
+			else:
+				# 預測值與實際值的差距，使用 MSE
+				print("\033[1;33m Mean squared error: %.2f \033[0m" % mean_squared_error(y_test, y_pred))
+			
+			print(dataset.feature_names)
+
+			print("Feature importance: ", self.clf.feature_importances_)
+			
+	# 讀取 Boston 資料集
+	boston = datasets.load_boston()
+	evaluator = RandomForestRegressorEvaluator()
+	evaluator.run(boston)
+
+	
