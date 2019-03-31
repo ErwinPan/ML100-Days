@@ -402,9 +402,10 @@
 
 			print("Acuuracy: ", acc)
 
-			print(dataset.feature_names)
-
-			print("Feature importance: ", self.clf.feature_importances_)
+			if 'feature_names' in dataset:
+			
+				print(dataset.feature_names)
+				print("Feature importance: ", self.clf.feature_importances_)
 			
 	# 讀取鳶尾花資料集
 	iris = datasets.load_iris()
@@ -438,13 +439,117 @@
 				# 預測值與實際值的差距，使用 MSE
 				print("\033[1;33m Mean squared error: %.2f \033[0m" % mean_squared_error(y_test, y_pred))
 			
-			print(dataset.feature_names)
-
-			print("Feature importance: ", self.clf.feature_importances_)
+			if 'feature_names' in dataset:
+			
+				print(dataset.feature_names)
+				print("Feature importance: ", self.clf.feature_importances_)
 			
 	# 讀取 Boston 資料集
 	boston = datasets.load_boston()
 	evaluator = RandomForestRegressorEvaluator()
 	evaluator.run(boston)
 
+
+
+# Day 45
+
+	* Ensemble: Gradient Boosting vs. Bagging (Bootstrap Aggregating)
 	
+	* Bias vs. Variance trade-off
+		* Linear model had a higher bias
+		* Polynomial model, depends a lot on the choice of training data. 
+		* If you change the data slightly, the shape of the curve will look very different, and the error will swing widely. 
+		* Therefore, the model is said to have high variance.
+		
+	* Bias: evaluating under-fitting
+	* Variance: evaluating over-fitting
+	
+	* Bagging:
+		* Use Average or Voting to reduce variance to avoid over-fitting
+			* Use Average: in Regression problem
+			* Use Voting: in Classification problem
+			
+	* Out of Bag : evaluating error of data out of bag
+	
+	* Bagging is used with "Strong Models": Use averaging or voting to avoid over-fitting caused by strong models
+	* Boosting is used with "Weak Models"
+	
+	* GBDT(Gradient Boosting Decision Tree) 又叫 MART(Multiple Additive Regression Tree)，
+		* 是一種迭代的決策樹算法，該算法由多棵決策樹組成，所有樹的結論累加起來做最終答案。
+		* 它在被提出之初就和SVM一起被認為是泛化能力較強的算法。
+
+	* GBDT中的樹是回歸樹(不是分類樹)，GBDT用來做回歸預測，調整後也可以用于分類。
+	
+	* Bagging算法是這樣做的︰每個分類器都隨機從原樣本中做有放回的采樣，然後分別在這些采樣後的樣本上訓練分類器，然後再把這些分類器組合起來。
+		* 簡單的多數投票一般就可以。
+		* 其代表算法是隨機森林。
+	* Boosting的意思是這樣，他通過迭代地訓練一系列的分類器，每個分類器采用的樣本分布都和上一輪的學習結果有關。其代表算法是AdaBoost, GBDT。
+	
+	* 對于Bagging算法來說，由于我們會並行地訓練很多不同的分類器的目的就是降低這個方差(variance) ,
+		* 因為采用了相互獨立的基分類器多了以後，h的值自然就會靠近.所以對于每個基分類器來說，
+		* 目標就是如何降低這個偏差(bias),所以我們會采用深度很深甚至不剪枝的決策樹。
+
+	* 對于Boosting來說，每一步我們都會在上一輪的基礎上更加擬合原資料，所以可以保證偏差(bias),
+		* 所以對于每個基分類器來說，問題就在于如何選擇variance更小的分類器，即更簡單的分類器，所以我們選擇了深度很淺的決策樹。
+		
+	* Erwin: 
+		* Bagging 是用一堆 over-fitting 的 tree (深度很深)來組合, 避免 over-fitting ?
+		* Boosting 是用一堆 under-fitting 的 tree (深度很深)來組合, 避免 under-fitting ?
+			* 迭代 (iteration) 多棵回歸樹來共同決策
+		
+	* xgboost 的全稱是eXtreme Gradient Boosting，它是Gradient Boosting Machine的一個c++實現，作者為正在華盛頓大學研究機器學習的大牛陳天奇 。
+		* xgboost，在計算速度和準確率上，較GBDT有明顯的提升。
+		* xgboost最大的特點在于，它能夠自動利用CPU的多線程進行並行，同時在算法上加以改進提高了精度。
+		* 它的處女秀是Kaggle的 希格斯子信號識別競賽，因為出眾的效率與較高的預測準確度在比賽論壇中引起了參賽選手的廣泛關注。
+		
+
+# Day 46
+
+	* Sample codes
+		from sklearn.ensemble import GradientBoostingRegressor
+		from sklearn.ensemble import GradientBoostingClassifier
+		
+		clf = GradientBoostingClassifier(
+			loss="deviance", #Loss 的選擇，若若改為 exponential 則會變成
+			Adaboosting 演算法，概念念相同但實作稍微不同
+			learning_rate=0.1, #每棵樹對最終結果的影響，應與 n_estimators 成反比
+			n_estimators=100 #決策樹的數量量
+		)
+		
+	* Class Wrapper
+
+		from sklearn.ensemble import GradientBoostingClassifier
+		from sklearn.ensemble import GradientBoostingRegressor
+		from sklearn.model_selection import train_test_split
+
+		class GradientBoostingClassifierEvaluator():
+			def __init__(self, loss='deviance', learning_rate=0.1, n_estimators=100, subsample=1.0, criterion='friedman_mse', min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, min_impurity_decrease=0.0, min_impurity_split=None, init=None, random_state=None, max_features=None, verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto', validation_fraction=0.1, n_iter_no_change=None, tol=0.0001):
+
+				# 建立模型
+				self.clf = GradientBoostingClassifier(loss, learning_rate, n_estimators, subsample, criterion, min_samples_split, min_samples_leaf, min_weight_fraction_leaf, max_depth, min_impurity_decrease, min_impurity_split, init, random_state, max_features, verbose, max_leaf_nodes, warm_start, presort, validation_fraction, n_iter_no_change, tol)
+
+			def run(self, dataset):
+
+				# 切分訓練集/測試集
+				x_train, x_test, y_train, y_test = train_test_split(dataset.data, dataset.target, test_size=0.25, random_state=4)
+
+
+				# 訓練模型
+				self.clf.fit(x_train, y_train)
+
+				# 預測測試集
+				y_pred = self.clf.predict(x_test)
+
+				acc = metrics.accuracy_score(y_test, y_pred)
+
+				print("Acuuracy: ", acc)
+
+				if 'feature_names' in dataset:
+					
+					print(dataset.feature_names)
+					print("Feature importance: ", self.clf.feature_importances_)
+					
+		
+		evaluator = GradientBoostingClassifierEvaluator()
+		evaluator.run(digits)
+		Acuuracy:  0.9644444444444444
