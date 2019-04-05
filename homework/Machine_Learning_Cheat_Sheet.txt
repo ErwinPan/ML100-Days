@@ -679,3 +679,77 @@
 
 		# 調整參數後約可降至 0.96 的 MSE
 		print(metrics.mean_squared_error(y_test, y_pred))
+		
+
+
+# Day 054 : clustering 1 非監督式機器學習簡介
+
+	* Unsupervised Learning 就是用來做 Clustering 
+	
+
+# Day 055 : clustering 2 聚類算法
+
+	* Differences:
+		* 監督式學習 目標在於找出決策邊界(decision boundary)
+		* Clustering 目標在於找出資料結構(關聯性)
+	
+	* K-means 聚類算法
+		* 把所有資料點分成 k 個 cluster，使得相同 cluster 中的所有資料點彼此儘量量相似，而不同 cluster 的資料點儘量量不同。
+		* 距離測量量（e.g. 歐氏距離）用於計算資料點的相似度和相異異度。每個 cluster 有一個中心點。中心點可理理解為最能代表 cluster 的點。
+		* K-means 目標是使總體群內平方誤差 (其他點與 Centroid 的距離) 最小
+		
+	* K-means 注意事項
+		* Random initialization: initial 設定的不同，會導致得到不同 clustering 的結果，可能導致 local optima，⽽而非 global optima。
+		* 因爲沒有預先的標記，對於 cluster 數量量多少才是最佳解，沒有標準答案，得靠手動測試觀察。
+			* 盡可能把資料 Visualize ?
+		* 
+		
+	* Ground True
+		* In machine learning, the term "ground truth" refers to the accuracy of the training set's classification 
+		* for supervised learning techniques
+		
+	* Sample codes
+		import matplotlib
+		import matplotlib.pyplot as plt
+		# Though the following import is not directly being used, it is required
+		# for 3D projection to work
+		from mpl_toolkits.mplot3d import Axes3D
+
+		from sklearn.cluster import KMeans
+		from sklearn import datasets
+		%matplotlib inline
+		
+		estimators = [('k_means_8', KMeans(n_clusters=8)),
+				  ('k_means_3', KMeans(n_clusters=3)),
+				  ('k_means_bad_init', KMeans(n_clusters=3, n_init=10, init='random'))]
+		fignum = 1
+		titles = ['8 clusters', '3 clusters', '3 clusters, bad initialization']
+		for name, est in estimators:
+			fig = plt.figure(fignum, figsize=(8, 6))
+			ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
+			
+			## fit data
+			## est = KMeans(....)
+			est.fit(X)
+			
+			labels = est.labels_
+			print (f'labels = {labels}')
+
+			# scatter(xs, ys, zs=0, zdir='z', s=20, c=None, depthshade=True, *args, **kwargs)
+			# Create a scatter plot
+			# xs, ys : array-like. The data positions.
+			#     float or array-like, optional, default: 0
+			#     The z-positions. Either an array of the same length as xs and ys or a single value to place all points in the same plane.
+			# c : color, sequence, or sequence of color, optional
+			ax.scatter(X[:, 3], X[:, 0], X[:, 2],
+					   c=labels.astype(np.float), edgecolor='k')
+
+			#ax.w_xaxis.set_ticklabels([])
+			ax.set_xlabel('x axis')
+			#ax.w_yaxis.set_ticklabels([])
+			ax.set_ylabel('y axis')
+			#ax.w_zaxis.set_ticklabels([])
+			ax.set_zlabel('z axis')
+			ax.set_title(titles[fignum - 1])
+			ax.dist = 12
+			fignum = fignum + 1
