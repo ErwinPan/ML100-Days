@@ -816,4 +816,10 @@
 		* 分群距離計算方式有 single-link, complete-link, average-link。
 		* 概念簡單且容易呈現，但不適合用在大資料。
 		
-	
+
+# Day 057 : clustering 3 階層分群算法
+
+	* datasets.make_moons: interleaving half circles, Complete is worst
+	* Isotropic: all clustering methods are good
+	* dataset.make_circles(同心圓 ): Complete is worst
+	* Anisotropically distributed data(斜三群): Complete is worst
