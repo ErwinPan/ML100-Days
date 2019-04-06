@@ -753,3 +753,24 @@
 			ax.set_title(titles[fignum - 1])
 			ax.dist = 12
 			fignum = fignum + 1
+
+			
+# Day 056 : clustering 2 聚類算法
+
+	* 輪輪廓分析 (Silhouette analysis)
+	
+	* 轮廓系数
+		* 取值为[-1, 1]，其值越大越好，且当值为负时，表明 ai<bi，样本被分配到错误的簇中，聚类结果不可接受。
+		* 对于接近0的结果，则表明聚类结果有重叠的情况
+
+	* sklearn.metrics.silhouette_score(X, labels, metric=’euclidean’, sample_size=None, random_state=None, **kwds)
+		* Compute the mean Silhouette Coefficient of all samples
+		* Is calculated using the mean intra-cluster distance (a) and the mean nearest-cluster distance (b) for each sample. 
+		* The Silhouette Coefficient for a sample is (b - a) / max(a, b). 
+		* To clarify, b is the distance between a sample and the nearest cluster that the sample is not a part of. 
+		* Note that Silhouette Coefficient is only defined if number of labels is 2 <= n_labels <= n_samples - 1
+		* The best value is 1 and the worst value is -1. Values near 0 indicate overlapping clusters. Negative values generally indicate that a sample has been assigned to the wrong cluster, as a different cluster is more similar.
+		
+	* 可以 draw :
+		* cluster center
+		* silhouette values (空間分布)
