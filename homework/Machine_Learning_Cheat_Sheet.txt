@@ -973,3 +973,31 @@
 
 		plt.show()
 
+
+# D61：dimension reduction 2 降維方法-T-SNE
+
+	* PCA 的問題
+		* PCA 是一種線性降維方式，因此若若特徵間是非線性關係，會有 underfitting 的問題。
+		* 求共變異異數矩陣進行奇異值分解，因此會被資料的差異性影響，無法很好的表現相似性及分佈。 ?
+		
+	* t-SNE
+		* t-SNE 也是一種降維方式，但它用了更複雜的公式來表達高維和低維之間的關係。
+		* 主要是將高維的資料用 Gaussian Distribution 的機率密度函數近似，
+		* 而低維資料的部分用 "t分佈" 來近似，再用 KL divergence 計算相似度，
+		* 再以梯度下降 (gradient descent) 求最佳解。
+			* Gaussian Distribution : 常態分布
+			* t分佈
+			* KL divergence
+			* gradient descent
+			
+	* t-SNE 優劣
+		* 優點
+			* 當特徵數量過多時，使用 PCA 可能會造成降維後的 underfitting，這時可以考慮使用t-SNE 來降維
+		* 缺點
+			* t-SNE 的需要比較多的時間執行
+			
+	* 重要知識點複習
+		* 特徵間爲非線性關係時 (e.g. 文字、影像資料)，PCA 很容易 underfitting
+		* t-SNE 對於特徵非線性資料有更好的降維呈現能力
+		
+	* t-SNE: t-Distributed Stochastic Neighbor Embedding
