@@ -1001,3 +1001,17 @@
 		* t-SNE 對於特徵非線性資料有更好的降維呈現能力
 		
 	* t-SNE: t-Distributed Stochastic Neighbor Embedding
+	
+# D62：dimension reduction 2 降維方法-T-SNE
+
+	* t-SNE
+		* 觀察S曲線使用 t-SNE 不同 perplexity 的流形還原效果
+		
+	* Perplexity
+		* In information theory, perplexity is a measurement of how well a probability distribution or probability model predicts a sample. 
+		* It may be used to compare probability models. 
+		* A low perplexity indicates the probability distribution is good at predicting the sample
+		
+	* Perplexity 因形狀而異？
+		* Circle : 越高越好
+		* S-Curve : 不是越高越好，約 7/8 sample 數量比較合適？
