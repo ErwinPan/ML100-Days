@@ -817,9 +817,31 @@
 		* 概念簡單且容易呈現，但不適合用在大資料。
 		
 
-# Day 057 : clustering 3 階層分群算法
+# Day 059 : clustering 3 階層分群算法
 
 	* datasets.make_moons: interleaving half circles, Complete is worst
 	* Isotropic: all clustering methods are good
 	* dataset.make_circles(同心圓 ): Complete is worst
 	* Anisotropically distributed data(斜三群): Complete is worst
+	
+
+# D59：dimension reduction 1 降維方法-主成份分析
+
+	* 爲什什麼需要降低維度 ?
+		* 特徵組合及抽象化
+			* 壓縮資料可進而組合出新的、抽象化的特徵，減少冗餘的資訊
+		* 資料視覺化
+			* 特徵太多時，很難 visualize data, 不容易易觀察資料
+			* 把資料維度 (特徵) 降到 2 到 3 個 , 則能夠用一般的 2D 或 3D 圖表呈現資料
+			
+	* Principle Component Analysis (PCA) 主成份分析
+		* PCA 透過計算 eigen value, eigen vector, 可以將原本的 features 降維至特定的維度
+			• 原本資料有 100 個 features，透過 PCA，可以將這 100 個 features 降成 2 個 features
+			• 新 features 為舊 features 的線性組合
+			
+	* PCA 應用在監督式學習的注意事項
+		* 不建議在早期時做 , 否則可能會丟失重要 features 而 underfitting
+		* 可以在 optimization 階段時 , 考慮 PCA , 並觀察運用了了 PCA 後對準確度的影響
+		
+	* 降低維度可以幫助我們壓縮及丟棄無用資訊、抽象化及組合新特徵、呈現高維數據(?)。常用的算法爲主成分分析。
+	* 在維度太大發生 overfitting 的情況下，可以嘗試⽤用 PCA 組成的特徵來來做監督式學習，但不建議一開始就做。
