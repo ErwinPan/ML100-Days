@@ -1015,3 +1015,7 @@
 	* Perplexity 因形狀而異？
 		* Circle : 越高越好
 		* S-Curve : 不是越高越好，約 7/8 sample 數量比較合適？
+		
+# D63：神經網路介紹
+
+	
