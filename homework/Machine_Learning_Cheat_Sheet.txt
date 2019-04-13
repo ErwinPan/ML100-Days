@@ -1018,4 +1018,16 @@
 		
 # D63：神經網路介紹
 
+	* 不過，深度學習的原理與實作的門檻並不太高，真正的難處不在深度學習本身，
+	* 而是在於如何將人類要解決的問題用數字來表達，並設計成機器可以學習的架構，如何用數字來表示貓臉？用數字來描述圍棋？這些都需要人類去定義，
+	* 因此深度學習要進一步發展，最需要的其實是人才，剩下的，就是機器的事了。
 	
+	
+# D64：深度學習體驗 : 模型調整與學習曲線
+
+	* 雖然圖像化更直覺，但是並非量量化指標且可視化不容易，故深度學習的觀察指標仍以損失函數/誤差為主
+	* 對於不同資料類型，適合加深與加寬的問題都有，但加深適合的問題類型較多
+	* 輸入特徵的選擇影響結果甚鉅，因此深度學習也需要考慮特徵工程
+	
+	* https://playground.tensorflow.org/#activation=tanh&batchSize=10&dataset=xor&regDataset=reg-gauss&learningRate=0.3&regularizationRate=0&noise=0&networkShape=7,1&seed=0.28326&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=true&xSquared=true&ySquared=true&cosX=false&sinX=true&cosY=false&sinY=true&collectStats=false&problem=regression&initZero=false&hideText=false
+	* Test lost 0.004: 1 layer 7 neurons
