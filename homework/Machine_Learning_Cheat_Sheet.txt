@@ -1031,3 +1031,54 @@
 	
 	* https://playground.tensorflow.org/#activation=tanh&batchSize=10&dataset=xor&regDataset=reg-gauss&learningRate=0.3&regularizationRate=0&noise=0&networkShape=7,1&seed=0.28326&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=true&xSquared=true&ySquared=true&cosX=false&sinX=true&cosY=false&sinY=true&collectStats=false&problem=regression&initZero=false&hideText=false
 	* Test lost 0.004: 1 layer 7 neurons
+	
+	
+# D65：深度學習體驗 : 啟動函數與正規化
+
+	* 練習 5：切換批次大小
+		* 批次大小很小時，雖然收斂過程非常不穩定，但平均而言會收斂到較好的結果
+		* 實務上，批次大小如果極小，效果確實比較好，但計算時間會相當久，因此通常會依照時間需要而折衷
+		
+	* 練習 6：切換學習速率
+		* 0.03 => Training Loss : 0.027
+		* 0.1 => Training Lost : 0.006
+		* 0.3 => 開始震盪
+		* 小於 0.3 時 學習速率較大時，收斂過程會越不穩定，但會收斂到較好的結果
+		* 大於 1 時 因為過度不穩定而導致無法收斂
+		
+	* 練習 7：切換啟動函數
+		* 在這種極端的情形下，Tanh 會無法收斂，ReLU 很快就穩定在很糟糕的分類狀態，惟有 Sigmoid 還可以收斂到不錯的結果
+		* 但實務上，Sigmoid 需要大量計算時間，而 ReLU 則相對快得很多，這也是需要取捨的，在本例中因位只有一層，所以狀況不太明顯
+		
+	* 練習 ８：切換正規化選項與參數
+		* Regularization : 
+			* None: 0.051
+			* L1: Test Loss 0.042
+			* L2: Test Loss 0.005
+		* 我們已經知道上述設定本來來就會收斂，只是在較⼩小的 L1 / L2 正規劃參參數下收斂比較穩定⼀一點
+		* 但正規化參數只要略大，反而會讓本來能收斂的設定變得無法收斂，這點 L1 比 L2情況略嚴重，因此本例中最適合的正規化參數是 L2 + 參數 0.001
+		* 實務上：L1 / L2 較常使用在非深度學習上，深度學習上效果有限
+	
+	* 重要知識點複習
+		* 批次大小 : 越小, 學習曲線越不穩定、但收斂越快
+		* 學習速率: 越大, 學習曲線越不穩定、但收斂越快，但是與批次大小不同的是 - 學習速率大於一定以上時，有可能不穩定到無法收斂
+		* 當類神經網路層數不多時，啟動函數 Sigmoid / Tanh 的效果比 Relu 更更好
+		* L1 / L2 正規化在非深度學習上效果較明顯，而正規化參數較小才有效果
+		
+	* Homework
+		* Activation
+			* ReLU	: 0.010 Test Loss, 0.2x
+			* Others: 0.4x
+		* Learning Rate: 
+			* 0.3 : unstable
+			* 0.1 : 0.032, 0.009 Test Loss
+		* Regularization
+			* None : 0.009
+			* L1 : 0.034
+			* L2 : 0.008
+		* Batch
+			* 10 : 0.008, 0.369, 0.096 (Not stable)
+			* 5 : 0.172, 0.030, 0.166 (Not stable)
+			* 20 : 0.143, 0.040, 0.095 (Stable)
+			* 30 : 0.020, 0.051, 0.024
+		
