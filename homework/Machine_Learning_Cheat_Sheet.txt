@@ -1082,3 +1082,87 @@
 			* 20 : 0.143, 0.040, 0.095 (Stable)
 			* 30 : 0.020, 0.051, 0.024
 		
+# D66：Keras 安裝與介紹全螢幕瀏覽
+
+	* Keras是一個高層神經網絡API，Keras由純Python編寫而成並基
+	* Tensorflow、Theano以及CNTK後端。
+	* 簡易和快速的原型設計（keras具有高度模塊化，極簡，和可擴充特性）
+	* 支持CNN和RNN，或二者的結合
+	* 無縫CPU和GPU切換
+	* Python協作：Keras沒有單獨的模型配置文件類型（作為對比，caffe有），模型由python代碼描述，使其更緊湊和更易debug，並提供了擴展的便利性
+	
+	* Final solution to install on my laptop
+		* https://medium.com/@johnnyliao/%E5%9C%A8nvidia-mx150%E7%9A%84win10%E5%AE%89%E8%A3%9Dcuda-toolkit-cudnn-python-anaconda-and-tensorflow-91d4c447b60e
+		* python 3.5
+		* CUDA v9.2 ( https://developer.nvidia.com/cuda-downloads )
+		* cuDNN v7.5 ( https://developer.nvidia.com/rdp/cudnn-download )
+		* CUDA: 1.10 
+			* conda install tensorflow-gpu=1.10
+		* 
+	* Commands
+		* (keras35) C:\Users\erwin>python
+			Python 3.5.6 |Anaconda, Inc.| (default, Aug 26 2018, 16:05:27) [MSC v.1900 64 bit (AMD64)] on win32
+			Type "help", "copyright", "credits" or "license" for more information.
+			>>> from tensorflow.python.client import device_lib
+			>>> print(device_lib.list_local_devices())
+				2019-04-16 00:12:47.227197: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX AVX2
+				2019-04-16 00:12:47.904239: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1405] Found device 0 with properties:
+				name: GeForce MX150 major: 6 minor: 1 memoryClockRate(GHz): 1.5315
+				pciBusID: 0000:01:00.0
+				totalMemory: 2.00GiB freeMemory: 1.62GiB
+				2019-04-16 00:12:47.908523: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1484] Adding visible gpu devices: 0
+				2019-04-16 00:12:48.355539: I tensorflow/core/common_runtime/gpu/gpu_device.cc:965] Device interconnect StreamExecutor with strength 1 edge matrix:
+				2019-04-16 00:12:48.359741: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971]      0
+				2019-04-16 00:12:48.361894: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] 0:   N
+				2019-04-16 00:12:48.364882: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1097] Created TensorFlow device (/device:GPU:0 with 1371 MB memory) -> physical GPU (device: 0, name: GeForce MX150, pci bus id: 0000:01:00.0, compute capability: 6.1)
+				[name: "/device:CPU:0"
+				device_type: "CPU"
+				memory_limit: 268435456
+				locality {
+				}
+				incarnation: 1394821717225229750
+				, name: "/device:GPU:0"
+				device_type: "GPU"
+				memory_limit: 1437731635
+				locality {
+				  bus_id: 1
+				  links {
+				  }
+				}
+				incarnation: 10895563417341006762
+				physical_device_desc: "device: 0, name: GeForce MX150, pci bus id: 0000:01:00.0, compute capability: 6.1"
+				]
+			>>>
+			
+	* Keras
+		* Getting started: 30 seconds to Keras
+			* The core data structure of Keras is a model, a way to organize layers. 
+			* The simplest type of model is the Sequential model, a linear stack of layers. 
+			* For more complex architectures, you should use the Keras functional API, which allows to build arbitrary graphs of layers.
+		* Here is the Sequential model:
+			* from keras.models import Sequential
+			* model = Sequential()
+		* Stacking layers is as easy as .add():
+			* from keras.layers import Dense
+			* model.add(Dense(units=64, activation='relu', input_dim=100))
+			* model.add(Dense(units=10, activation='softmax'))
+		* Once your model looks good, configure its learning process with .compile():
+			* model.compile(loss='categorical_crossentropy',
+						  optimizer='sgd',
+						  metrics=['accuracy'])
+		* If you need to, you can further configure your optimizer. A core principle of Keras is to make things reasonably simple, 
+				while allowing the user to be fully in control when they need to 
+				(the ultimate control being the easy extensibility of the source code).
+			* model.compile(loss=keras.losses.categorical_crossentropy,
+						  optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9, nesterov=True))
+		* You can now iterate on your training data in batches:
+			* # x_train and y_train are Numpy arrays --just like in the Scikit-Learn API.
+			* model.fit(x_train, y_train, epochs=5, batch_size=32)
+		* Alternatively, you can feed batches to your model manually:
+			* model.train_on_batch(x_batch, y_batch)
+		* Evaluate your performance in one line:
+			* loss_and_metrics = model.evaluate(x_test, y_test, batch_size=128)
+		* Or generate predictions on new data:
+			* classes = model.predict(x_test, batch_size=128)
+			
+			
