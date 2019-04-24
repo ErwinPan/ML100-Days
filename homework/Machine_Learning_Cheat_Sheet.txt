@@ -1097,8 +1097,16 @@
 		* CUDA v9.2 ( https://developer.nvidia.com/cuda-downloads )
 		* cuDNN v7.5 ( https://developer.nvidia.com/rdp/cudnn-download )
 		* CUDA: 1.10 
+			* conda create -n keras36 python=3.6
+			* conda activate keras36
 			* conda install tensorflow-gpu=1.10
-		* 
+			* conda install keras
+			* conda install notebook
+			* conda install matplotlib
+			* conda install pillow
+			* conda install imageio
+			* conda install pandas
+
 	* Commands
 		* (keras35) C:\Users\erwin>python
 			Python 3.5.6 |Anaconda, Inc.| (default, Aug 26 2018, 16:05:27) [MSC v.1900 64 bit (AMD64)] on win32
@@ -1272,6 +1280,7 @@
 			* model = Sequential()
 			* model.add(Dense(32, _input_dim=784))
 			* model.add(Activation(“relu”))
+			
 	* 常用參數說明
 		* Dense 實現全連接層
 			* Dense(units,activation,use_bias=True, kernel_initializer=’glorot_uniform’, bias_initializer=’zeros’)
@@ -1283,6 +1292,7 @@
 			* Flatten()
 		Reahape 對上層輸出reshape 
 			* Reshape(target_shape)
+			
 	* 重要知識點複習
 		* Sequential 序貫模型: 序貫模型為最簡單的線性、從頭到尾的結構順序，一路到底
 		Sequential模型的基本元件一般需要：
@@ -1292,3 +1302,37 @@
 		• model.fit，模型訓練參參數設置 + 訓練；
 		• 模型評估
 		• 模型預測
+		
+	*Sample codes
+		# build our CNN model
+		model = Sequential()
+		# layer 1
+		model.add(Conv2D(filters=64, 
+						 kernel_size=(3,3),
+						 input_shape=(32, 32,3), 
+						 activation='relu', 
+						 padding='same'))
+		# layer 2
+		model.add(MaxPooling2D(pool_size=(2, 2)))
+		# layer 3
+		model.add(Flatten())
+		# layer 4
+		model.add(Dense(1024))
+		# layer 5
+		model.add(Activation('relu'))
+		# layer 6
+		model.add(Dense(num_classes))
+		# lyaer 7
+		model.add(Activation('softmax'))
+		# Dump all model layers
+		print(model.summary())
+		
+		
+		
+		
+		
+		
+		
+# D101-D105：影像辨識
+
+	* 
