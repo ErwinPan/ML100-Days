@@ -1271,6 +1271,7 @@
 
 			
 # D68：Keras Sequential API
+
 	* Sequential API
 		* Way one
 			* from keras.models import Sequential
@@ -1327,11 +1328,22 @@
 		# Dump all model layers
 		print(model.summary())
 		
+				
+# D69：Keras Module API
 		
+	* 函數式模型是最廣泛的一類模型，序貫模型（Sequential）只是它的一種特殊情況
 		
-		
-		
-		
+	* 輸入是張量，輸出也是張量的一個框架就是一個模型，通過Model定義
+
+
+
+
+
+
+
+
+
+	
 		
 # D101-D105：影像辨識
 
