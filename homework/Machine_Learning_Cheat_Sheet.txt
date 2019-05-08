@@ -1336,7 +1336,12 @@
 	* 輸入是張量，輸出也是張量的一個框架就是一個模型，通過Model定義
 
 
+# D70：Multi-layer Perception多層感知
 
+	* 多層感知機其實就是可以用多層多個perception 來達到最後目的
+		• 在機器學習領域像是我們稱為 multiple classification system 或是 ensemble learning
+	* 深度神經網路路(deep neural network, DNN)，神似人工神經網路的MLP
+	* 若每個神經元的激活函數都是線性函數，那麼，任意層數的MLP都可被約簡成一個等價的單層感知器
 
 
 
