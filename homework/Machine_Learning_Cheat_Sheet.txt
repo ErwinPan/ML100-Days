@@ -1343,11 +1343,72 @@
 	* 深度神經網路路(deep neural network, DNN)，神似人工神經網路的MLP
 	* 若每個神經元的激活函數都是線性函數，那麼，任意層數的MLP都可被約簡成一個等價的單層感知器
 
+	* 機器學習- 神經網路(多層感知機 Multilayer perceptron, MLP)運作方式
+		* https://medium.com/@chih.sheng.huang821/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-%E7%A5%9E%E7%B6%93%E7%B6%B2%E8%B7%AF-%E5%A4%9A%E5%B1%A4%E6%84%9F%E7%9F%A5%E6%A9%9F-multilayer-perceptron-mlp-%E9%81%8B%E4%BD%9C%E6%96%B9%E5%BC%8F-f0e108e8b9af
+		* 由ＸＯＲ問題的例子可以知道，第一層兩個Perception在做的事情其實是將資料投影到另一個特徵空間去
+		*（這個特徵空間大小是根據你設計的Perception數目決定的），
+		* 所以最後再把h1和h2的結果當作另一個Perception的輸入，再做一個下一層的Perception就可以完美分類XOR問題啦
 
 
+# D71：損失函數
 
-
-
+	* 損失函數大致可分為：分類問題的損失函數和回歸問題的損失函數
+	
+	* 損失函數為什麼是最小化
+		* 期望: 希望模型預測出來的東西可以跟實際的值一樣
+		* 預測出來的東西基本上跟實際值都會有落差
+			• 在回歸問題稱為「殘差(residual)」
+			• 在分類問題稱為「錯誤率(error rate)」
+		* 損失函數中的損失就是「實際值和預測值的落差」
+		
+	* 損失函數的分類介紹 - mean_squared_error
+		* 均方誤差(mean_squared_error)：就是最小平方法(Least Square) 的目標函數 -- 預測值與實際值的差距之平均值。
+			* 還有其他變形的函數, 如 mean_absolute_error、mean_absolute_percentage_error、mean_squared_logarithmic_error。
+		* 使用時機：
+			• n個樣本的預測值（y）與（y_）的差距
+			• Numerical 相關
+		* Keras 上的調用方式：
+			• from keras import losses
+			• model.compile(loss= ‘mean_squared_error‘, optimizer='sgd’)
+			• 其中，包含y_true， y_pred的傳遞，函數是表達如下：
+			• keras.losses.mean_squared_error(y_true, y_pred)
+		
+	* 損失函數的分類介紹 - Cross Entropy
+		* 當預測值與實際值愈相近，損失函數就愈小，反之差距很大，就會更影響損失函數的值
+		* 要用 Cross Entropy 取代 MSE，因為，在梯度下時，Cross Entropy 計算速度較快 						???
+		* 使用時機：
+			• 整數目標：Sparse categorical_crossentropy
+			• 分類目標：categorical_crossentropy
+			• 二分類目標：binary_crossentropy。
+		* Keras 上的調用方式：
+			• from keras import losses
+			• model.compile(loss= ‘categorical_crossentropy ‘, optimizer='sgd’)
+			• 其中, 包含y_true， y_pred的傳遞, 函數是表達如下：
+			• keras.losses.categorical_crossentropy(y_true, y_pred)
+			
+	* 損失函數的分類介紹: Hinge Error (hinge) 																???
+		* 是一種單邊誤差，不考慮負值同樣也有多種變形，squared_hinge、categorical_hinge
+		* 使用時機：
+			• 適用於『支援向量機』(SVM)的最大間隔分類法(maximum-margin classification)
+		* Keras 上的調⽤用⽅方式：
+			• from keras import losses
+			• model.compile(loss= ‘hinge‘, optimizer='sgd’)
+			• 其中，包含y_true，y_pred的傳遞, 函數是表達如下:
+			• keras.losses.hinge(y_true, y_pred)
+			
+	* 特別的案例: 自定義損失函數 																			???
+		* 根據問題的實際情況，定制合理的損失函數
+		* 舉例：預測果汁日銷量問題，如果預測銷量大於實際銷量則會損失成本；如果預測銷量小於實際銷量則會損失利潤。
+		• 考慮重點：製造一盒果汁的成本和銷售一盒果汁的利利潤不是等價的
+		• 需要使用符合該問題的自定義損失函數自定義損失函數為 
+			• 損失函數表示若預測結果y小於標準答案y_，損失函數為利潤乘以預測結果y與標準答案之差
+			• 若預測結果y大於標準答案y_，損失函數為成本乘以預測結果y與標準答案之差用
+		• Tensorflow函數表⽰示為：
+			loss = tf.reduce_sum(tf.where(tf.greater(y, y_), COST*(y-y_), PROFIT*(y_-y)))
+		
+	* 複習 : 流程
+		* 損失函數中的損失就是「實際值和預測值的落差」，損失函數是最小化
+		* 損失函數大致可分為：分類問題的損失函數和回歸問題的損失函數
 	
 		
 # D101-D105：影像辨識
