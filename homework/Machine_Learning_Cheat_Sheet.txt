@@ -35,7 +35,7 @@
 	* Q: 這麼多評估指標，該怎麼選擇?
 		* 回歸問題: 可以透過 R-square 很快了了解預測的準確程度；
 		* 分類問題: 若若為二分類 (binary classification)，通常使用 AUC 評估。
-			* 但如果有特別希望哪一類別不要分錯，則可使⽤用 F1-Score，觀察 Recall 值或是 Precision 值。
+			* 但如果有特別希望哪一類別不要分錯，則可使用 F1-Score，觀察 Recall 值或是 Precision 值。
 		* 多分類問題: 則可使用 top-k accuracy，k 代表模型預測前 k 個類別有包含正確類別即為正確 (ImageNet 競賽通常都是比 Top-5 Accuracy)
 		
 		
@@ -844,7 +844,7 @@
 		* 可以在 optimization 階段時 , 考慮 PCA , 並觀察運用了了 PCA 後對準確度的影響
 		
 	* 降低維度可以幫助我們壓縮及丟棄無用資訊、抽象化及組合新特徵、呈現高維數據(?)。常用的算法爲主成分分析。
-	* 在維度太大發生 overfitting 的情況下，可以嘗試⽤用 PCA 組成的特徵來來做監督式學習，但不建議一開始就做。
+	* 在維度太大發生 overfitting 的情況下，可以嘗試用 PCA 組成的特徵來來做監督式學習，但不建議一開始就做。
 	
 	
 # D60：dimension reduction 1 降維方法-主成份分析
@@ -1390,7 +1390,7 @@
 		* 是一種單邊誤差，不考慮負值同樣也有多種變形，squared_hinge、categorical_hinge
 		* 使用時機：
 			• 適用於『支援向量機』(SVM)的最大間隔分類法(maximum-margin classification)
-		* Keras 上的調⽤用⽅方式：
+		* Keras 上的調用方式：
 			• from keras import losses
 			• model.compile(loss= ‘hinge‘, optimizer='sgd’)
 			• 其中，包含y_true，y_pred的傳遞, 函數是表達如下:
@@ -1410,7 +1410,135 @@
 		* 損失函數中的損失就是「實際值和預測值的落差」，損失函數是最小化
 		* 損失函數大致可分為：分類問題的損失函數和回歸問題的損失函數
 	
+	
+# D72：激活函數
+
+	* 完成今日課程後你應該可以了解 : 針對不同的問題使用合適的激活函數
+	
+	* 激活函數的作用
+		* 深度學習的基本原理理是基於人工神經網絡，信號從一個神經元進入，經過非線性的 activation function
+			• 如此循環往復，直到輸出層。正是由於這些非線性函數的反复疊加，才使得神經網絡有足夠的 capacity 來來抓取複雜的 pattern		
+		* 激活函數的最大作用就是非線性化
+			• 如果不用激活函數的話，無論神經網絡有多少層，輸出都是輸入的線性組合
+		* 激活函數的另一個重要特徵是：它應該是可以區分
+			• 以便在網絡中向後推進以計算相對於權重的誤差（丟失）梯度時執行反向優化策略，
+			* 然後相應地使用梯度下降或任何其他優化技術優化權重以減少誤差
+	
+	* 常用激活函數介紹：Sigmoid
+		* 特點是會把輸出限定在 0~1 之間，
+			* 在 x<0 ，輸出就是 0，
+			* 在 x>0，輸出就是 1，
+			* 這樣使得數據在傳遞過程中不容易發散
+		* 兩個主要缺點
+			• 一是 Sigmoid 容易過飽和，丟失梯度。這樣在反向傳播時，很容易出現梯度消失的情況，導致訓練無法完整
+			• 二是 Sigmoid 的輸出均值不是 0
+			
+	* 常用激活函數介紹：Softmax
+		* 輸出數值介於 0 ~ 1 之間
+		* Softmax 把一個 k 維的 real value 向量（a1,a2,a3,a4….）映射成一個（b1,b2,b3,b4….）
+			* 其中 bi 是一個 0～1 的常數，輸出神經元之和為1.0，所以可以拿來做多分類的機率預測
+		* 為什麼要取指數
+			• 第一個原因是要模擬 max 的行為，所以要讓大的更大。
+			• 第二個原因是需要一個可導的函數
+			
+	* 常用激活函數介紹：Tanh
+		* 輸出數值介於 -1 ~ 1 之間
+		* tanh 讀作 Hyperbolic Tangent tanh 也稱為雙切正切函數，取值範圍為 [-1,1]。
+		* tanh 在特徵相差明顯時的效果會很好，在循環過程中會不斷擴大特徵效果
+			
+	* 常用激活函數介紹：Sigmoid vs Softmax
+		* Sigmoid 將一個 real value 映射到（0,1）的區間，用來做二分類
+		* Softmax 把一個 k 維的 real value 向量量（a1,a2,a3,a4….）映射成一個（b1,b2,b3,b4….）
+			* 其中 bi 是一個 0～1 的常數，輸出神經元之和為 1.0，所以可以拿來來做多分類的機率預測
+		* 二分類問題時 sigmoid 和 softmax 是一樣的，求的都是 cross entropy loss
+			
+	* 常用激活函數介紹: Sigmoid vs Tanh
+		* tanh 函數將輸入值壓縮到 -1~1 的範圍，因此它是 0 均值的，解決了Sigmoid 函數的非 zero-centered 問題，
+		* 但是它也存在梯度消失和冪運算的問題。
+		* 其實 tanh(x)=2sigmoid(2x)-1
 		
+	* 常用激活函數介紹：ReLU
+		* 輸出數值介於 0 ~ infinity 之間
+			* f(x) = max(0, x)
+		* 修正線性單元（Rectified linear unit，ReLU）
+			• 在 x>0 時導數恆為1
+			• 對於 x<0，其梯度恆為 0，這時候它也會出現飽和的現象，甚至使神經元直接無效，從而其權重無法得到更新（在這種情況下通常稱為 dying ReLU）
+			* Leaky ReLU 和 PReLU 的提出正是為了解決這一問題
+		* ELU 函數是針對 ReLU 函數的一個改進型，相比於 ReLU 函數，在輸入為負數的情況下，是有一定的輸出的
+			* f(x) = 
+				* x if x > 0
+				* a((e power of x) - 1)
+		* 這樣可以消除 ReLU 死掉的問題
+		* 還是有梯度飽和和指數運算的問題
+		* PReLU
+			* f(x) = max(ax, x)
+			• 參數化修正線性單元（Parameteric Rectified Linear Unit，PReLU）屬於 ReLU 修正類激活函數的一員。
+		* Leaky ReLU
+			• 當 α=0.1 時，我們叫 PReLU 為 Leaky ReLU，算是 PReLU 的一種特殊情況
+		* RReLU 以及 Leaky ReLU 有一些共同點，即爲負值輸入添加了一個線性項。
+		
+	* 常用激活函數介紹: Maxout
+		* f(x) = max(wT1x + b1, wT2x + b2)
+		* Maxout 是深度學習網絡中的一層網絡，就像池化層、卷積層一樣，可以看成是網絡的激活函數層
+		* Maxout 神經元的激活函數是取得所有這些「函數層」中的最大值
+		* Maxout 的擬合能力是非常強的，優點是計算簡單，不會過飽和，同時又沒有 ReLU 的缺點
+		* Maxout 的缺點是過程參數相當於多了一倍
+		
+	* 如何選擇正確的激活函數
+		* 根據各個函數的優缺點來來配置
+			• 如果使用 ReLU，要小心設置 learning rate，注意不要讓網絡出現很多「dead」 神經元，
+			* 如果不好解決，可以試試 Leaky ReLU、PReLU 或者 Maxout
+		* 根據問題的性質
+			• 用於分類器時，Sigmoid 函數及其組合通常效果更更好
+			• 由於梯度消失問題，有時要避免使用 sigmoid 和 tanh 函數。
+			* ReLU 函數是一個通用的激活函數，目前在大多數情況下使⽤用
+			• 如果神經網絡中出現死神經元，那麼 PReLU 函數就是最好的選擇
+			• ReLU 函數建議只能在隱藏層中使⽤用
+		* 如何得知 「dead」 神經元 																			???
+		* 考慮 DNN 損失函數和激活函數
+			• 如果使用 sigmoid 激活函數，則交叉熵損失函數一般肯定比均方差損失函數好；
+			• 如果是 DNN 用於分類，則一般在輸出層使用 softmax 激活函數
+			• ReLU 激活函數對梯度消失問題有一定程度的解決，尤其是在 CNN 模型中。
+		* 梯度消失 Vanishing gradient problem
+			* 原因：前面的層比後面的層梯度變化更小，故變化更慢
+			* 結果：Output 變化慢 => Gradient 小 => 學得慢
+			* Sigmoid，Tanh 都有這樣特性不適合用在 Layers 多的DNN 架構
+		
+	* 前述流程 / python程式 對照
+		* 激活函數可以通過設置單獨的激活層實現，可以也在構造層對象時通過傳遞 activation 參數實現：
+			* from keras.layers import Activation,Dense 
+			* model.add(Dense(64,activation=‘tanh’))
+		* 考慮不同Backend support，通過傳遞一個元素運算的Theano / TensorFlow / CNTK函數來作為激活函數：
+			* from keras import backend as k
+			* model.add(Dense(64,activation=k.tanh))
+			* model.add( Activation(k.tanh))
+		
+	* 重要知識點複習：何謂激活函數 (Activation Function)
+		* 激活函數定義了每個節點（神經元）的輸出和輸入關係的函數為神經元提供規模化非線性化能力，讓神經網絡具備強大的擬合能力
+		
+	* 重要知識點複習：如何選擇正確的激活函數
+		* 根據各個函數的優缺點來配置
+			• 如果使用 ReLU，要小心設置 learning rate，注意不要讓網絡出現很多「dead」 神經元，
+			* 如果不好解決，可以試試 Leaky ReLU、PReLU 或者 Maxout
+		* 根據問題的性質
+			• 用於分類器時，Sigmoid 函數及其組合通常效果更更好
+			• 由於梯度消失問題，有時要避免使用 sigmoid 和 tanh 函數。
+			* ReLU 函數是一個通用的激活函數，目前在大多數情況下使用
+			• 如果神經網絡中出現死神經元，那麼 PReLU 函數就是最好的選擇
+			• ReLU 函數建議只能在隱藏層中使⽤用
+		
+	* 各種 Activation 适用范围
+		* Sigmoid 函数：主要用于二分类的输出层，否则不用。
+		* tanh 函数：几乎所有场合均可以。 
+			* 個人覺得都很差
+		* ReLU(Rectified Linear Unit 修正的线性单元)：二分类问题选择 sigmoid ，余下的问题 ReLU 是默认的选择
+		* leaky ReLU（带泄露的ReLU）
+		
+		
+			
+			
+			
+			
 # D101-D105：影像辨識
 
 	* 
