@@ -1535,10 +1535,66 @@
 		* leaky ReLU（带泄露的ReLU）
 		
 		
+# D73：Gradient Descent
+
+	* ML common process
+		* 決定 FUNCTION 定義
+		* 決定模型
+		* 確立目標及求解方法
+			* compile 函數定義損失函數(loss)
+			* 以 compile 函數定義優化函數(optimizer)		=> Gradient Descent
+			* 以 compile 函數定義成效衡量指標(metrics)
+		* 訓練
+		* Evaluation
+		
+	* 最常用的優化算法 -梯度下降
+		* 機器學習算法當中，優化算法的功能，是通過改善訓練⽅方式，來來最小化(或最大化)損失函數
+		* 最常用的優化算法是梯度下降
+			• 通過尋找最小值，控制⽅方差，更更新模型參參數，最終使模型收斂
+			• wi+1 = wi - di·ηi, i=0,1,…
+				* η : eta
+			• 參數 η 是學習率。這個參數既可以設置為固定值，也可以用一維優化方法沿著訓練的方向逐步更更新計算
+			• 參數的更新分為兩步：第一步計算梯度下降的方向，第二步計算合適的學習
 			
+	* 學習率對梯度下降的影響
+		* 學習率定義了了每次疊代中應該更更改的參參數量量。換句句話說，它控制我們應該收斂到最低的速度或速度。
+		* 小學習率可以使疊代收斂，大學習率可能超過最小值
+
+	* 梯度下降法的過程
+		* 首先需要設定一個初始參參數值，通常情況下將初值設為零(w=0)，接下來需要計算成本函數 cost
+		* 然後計算函數的導數-某個點處的斜率值，並設定學習效率參參數(lr)的值。
+		* 重複執行上述過程，直到參數值收斂，這樣我們就能獲得函數的最優解
+		
+	* 怎麼確定到極值點了呢？
+		* η 又稱學習率，是一個挪動步長的基數，
+			* df(x)/dx是導函數，當離得遠的時候導數大，移動的就快，
+			* 當接近極值時，導數非常小，移動的就非常小，防止跨過極值點
+		* Gradient descent never guarantee global minima
+		* Different initial point will be caused reach different minima, so different results
+		* Popular & Simple Idea: 
+			* Reduce the learning rate by some factor every few epochs
+			* 在訓練神經網絡的時候，通常在訓練剛開始的時候使用較大的 learning rate，隨著訓練的進行，我們會慢的減小 learning rate
+		* 使用 momentum 是梯度下降法中一種常用的加速技術
+			* Gradient Descent 的實現: SGD, 對於一般的SGD，其表達式為 x ← x − α ∗ dx (x沿負梯度⽅方向下降)
+			* 而帶 momentum 項的 SGD 則寫生如下形式：
+				* v = ß ∗ v − a ∗ d x
+				* x ← x + v
+		* 其中ß即momentum係數，通俗的理解上面式子就是，
+			* 如果上一次的momentum（即 ß ）與這一次的負梯度方向是相同的，
+			* 那這次下降的幅度就會加大，所以這樣做能夠達到加速收斂的過程
 			
+	* 重要知識點複習：梯度下降法（Gradient descent）
+		* Gradient descent是一個一階最佳化算法，通常也稱為最速下降法。
+		* 要使用梯度下降法找到一個函數的局部極小值，必須向函數上當前點對應梯度（或者是近似梯度）的反方向的規定步長距離點進行疊代搜索。
+		* 梯度下降法的缺點包括：
+			• 靠近極小值時速度減慢。
+			• 直線搜索可能會產⽣生一些問題。
+			• 可能會「之字型」地下降
+		* avoid local minima
+			• 在訓練神經網絡的時候，通常在訓練剛開始的時候使用較大的 learning rate，
+			• 隨著訓練的進行，我們會慢慢的減小 learning rate
 			
+
 			
 # D101-D105：影像辨識
 
-	* 
